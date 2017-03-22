@@ -76,7 +76,7 @@ jQuery( document ).ready(function() {
 		return getRides( $jq("#rides"), renderRides );
 	}
 	
-	var ridesTemplate = "{{#object}}<tr><td>{{object.title}}</td><td>{{object.start.latitude}}</td><td>{{object.start.longitude}}</td></tr>{{/object}}";
+	var ridesTemplate = "{{#object}}<tr><td>{{object.title}}</td><td><a href=\"follow.html?q={{object.uuid}}\">Follow</a></td><td><a href=\"ride.html?q={{object.uuid}}\">Ride</a></td><td>{{object.start.latitude}}</td><td>{{object.start.longitude}}</td></tr>{{/object}}";
 	
 	var renderRides = function( tbody, result ) {
 		

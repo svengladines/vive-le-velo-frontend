@@ -1,89 +1,66 @@
 <!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Vive Le Velo</title>
-
-    <link rel="stylesheet" href="https://js.arcgis.com/3.20/esri/css/jsapi.css"/>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:; connect-src http://*">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+        <script type="text/javascript" src="js/jquery-3.1.1.js"></script>
+        <script type="text/javascript" src="js/mustache-2.3.0.js"></script>
+        <script type="text/javascript" src="js/ride.js"></script>
+        <title>Vive Le Velo</title>
+    </head>
+    <body>
     
-    <script type="text/javascript" src="js/jquery-3.1.1.js"></script>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="https://js.arcgis.com/3.20/"></script>
-    <script src="js/ride.js"></script>
-
-    <style>
-        html, body {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: 'News Cycle', sans-serif;
-            font-size: 0.90em;
-        }
-
-        #map {
-            height: 100%;
-            width: 100%;
-        }
-
-        path[data-rider="reini"] {
-            fill: none;
-            stroke: #f5cb00;
-            stroke-width: 3;
-            stroke-opacity: 1;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        path[data-rider="john"] {
-            fill: none;
-            stroke: #f67682;
-            stroke-width: 5;
-            stroke-opacity: 0.85;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        path[data-rider="krikke"] {
-            fill: none;
-            stroke: #f75e64;
-            stroke-width: 12;
-            stroke-opacity: 0.9;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        path[data-rider="svekke"] {
-            fill: none;
-            stroke: #f72d3f;
-            stroke-width: 11;
-            stroke-opacity: 0.45;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        #legend svg {
-            vertical-align: middle;
-        }
-    </style>
-
-</head>
-
-<body>
-<div id="map">
-
-    
-    <div style="font-family: Lucida Grande,Helvetica,Arial,Verdana,sans-serif; font-size: 14px; position: absolute; right: 30px; top: 20px; z-index: 100; padding: 5px; border: 2px solid #666666; border-radius: 5px; background-color: white;">
-
-        <div id="legend">
-            <div style="padding: 6px; text-align: center;">
-                Riders
-            </div>
-        </div>
-
-    </div>
-
-</div>
+    <table>
+    	<thead>
+    	</thead>
+    	<tbody id="ride">
+    	</tbody>
+    </table>
+	<form>
+		<div data-role="page" id="index">
+ 
+			<div data-role="content">
+				<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align: center" id="custom-fieldset">
+					<label for="actor"> ID </label>
+					<input id="ride-uuid" type="hidden"/>
+					<input id="ride-start" type="button" value="Start" class="ride-status" data-status="ROLLIN_IN_THE_DEEP"/>
+					<input id="pause" type="button" value="Pause" class="ride-status" data-status="PAUZED"/>
+					<input id="pause" type="button" value="Finish" class="ride-status" data-status="FINITO"/>
+				</fieldset>
+			</div> 
+ 
+		</div> 
+	</form>
 </body>
-
 </html>

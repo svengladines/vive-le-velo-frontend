@@ -1,116 +1,215 @@
 var $jq = jQuery.noConflict();
-var XMap;
-var XPoint;
-var XGraphic;
 
-var map;
-var points = [];
-var iconPath = "M24.0,2.199C11.9595,2.199,2.199,11.9595,2.199,24.0c0.0,12.0405,9.7605,21.801,21.801,21.801c12.0405,0.0,21.801-9.7605,21.801-21.801C45.801,11.9595,36.0405,2.199,24.0,2.199zM31.0935,11.0625c1.401,0.0,2.532,2.2245,2.532,4.968S32.4915,21.0,31.0935,21.0c-1.398,0.0-2.532-2.2245-2.532-4.968S29.697,11.0625,31.0935,11.0625zM16.656,11.0625c1.398,0.0,2.532,2.2245,2.532,4.968S18.0555,21.0,16.656,21.0s-2.532-2.2245-2.532-4.968S15.258,11.0625,16.656,11.0625zM24.0315,39.0c-4.3095,0.0-8.3445-2.6355-11.8185-7.2165c3.5955,2.346,7.5315,3.654,11.661,3.654c4.3845,0.0,8.5515-1.47,12.3225-4.101C32.649,36.198,28.485,39.0,24.0315,39.0z";
-var initColor = "#ce641d";
+jQuery( document ).ready(function() {
+	
+	var ridesTemplate = "<tr><td>{{object.title}}</td><td><a href=\"follow.html?q={{object.uuid}}\">Follow</a></td><td><a href=\"ride.html?q={{object.uuid}}\">Ride</a></td><td>{{object.status}}</td><td>{{object.start.latitude}}</td><td>{{object.start.longitude}}</td></tr>";
+	
+	var getParameter = function (url, key) {
+		var urlParts = url.split('?');
+	    var sURLVariables = urlParts[1].split('&');
+	    for (var i = 0; i < sURLVariables.length; i++) 
+	    {
+	        var sParameterName = sURLVariables[i].split('=');
+	        if (sParameterName[0] == key) 
+	        {
+	            return sParameterName[1];
+	        }
+	    }
+	};
+	
+	var getRider = function() {
+        var key = "userID";
+        var storage = window.localStorage;
+        var value = storage.getItem(key);
+        return value;
+     };
+	
+	var Coordinate = function( latitude, longitude ) {
+		this.latitude = latitude;
+		this.longitude = longitude;
+	};
+	
+	var Ride = function ( uuid, status, latitude, longitude ) {
+		this.start = new Coordinate( latitude, longitude );
+		this.status = status;
+		this.uuid = uuid;
+	};
+	
+	var Location = function ( rideUuid, riderUuid, latitude, longitude ) {
+		this.rideID = rideUuid;
+		this.riderID = riderUuid;
+		this.lattitude = latitude;
+		this.longitude = longitude;
+	}
 
-var locationsURL = function () {
-	
-	return "http://localhost:8067/api/locations";
-	
-};
-
-var loadMap = function() {
-	
-	 map = new XMap("map",{
-          basemap: "streets",
-          center: [ 11.333333, 43.333333 ],
-          zoom: 11,
-          minZoom: 2
-     });
-	 
-	 map.on( "load", mapLoaded );
-	
-}
-
-var getLocations = function ( callback ) {
-	
-	$jq.ajax( {
-		type: "get",
-		url: locationsURL(),
-		dataType: "json",
-	    processData: false,
-		success: function( returned ) {
-			if ( callback ) {
-				callback( returned );
-			}
-			else {
-				// success( button, statusElement, "Opgeslagen" );
-			}
-		},
-		error: function(  jqXHR, textStatus, errorThrown ) {
-			console.log( errorThrown );
-		}
-	});
-	
-};
-
-var locationsReceived = function( locations ) {
-	
-	for (i = 0; i < locations.length; i++) {
-		var location = locations[ i ];
-		var l = [ location.longitude, location.lattitude ];
-		points.push( l );
+	var rideURL = function ( uuid ) {
+		
+		return "http://localhost:8067/api/rides/" + uuid ;
 		
 	};
 	
-	loadMap();
+	var locationsURL = function () {
+		
+		return "http://localhost:8067/api/locations";
+		
+	};
 	
-};
+	var putRide = function ( ride, tbody, callback ) {
+		
+		var u = rideURL( ride.uuid );
+		
+		$jq.ajax( {
+			type: "put",
+			url: u,
+			dataType: "json",
+			contentType: "application/json;charset=\"utf-8\"",
+		    processData: false,
+			data: JSON.stringify( ride ),
+			success: function( returned ) {
+				if ( callback ) {
+					callback( tbody, returned );
+				}
+				else {
+					// success( button, statusElement, "Opgeslagen" );
+				}
+			},
+			error: function(  jqXHR, textStatus, errorThrown ) {
+				console.log( errorThrown );
+			}
+		});
+		
+	};
+	
+	var getRide = function ( uuid, tbody, callback ) {
+		
+		var u = rideURL( uuid ); 
+		
+		$jq.ajax( {
+			type: "get",
+			url: u,
+			dataType: "json",
+		    processData: false,
+			success: function( returned ) {
+				if ( callback ) {
+					callback( tbody, returned );
+				}
+				else {
+					// success( button, statusElement, "Opgeslagen" );
+				}
+			},
+			error: function(  jqXHR, textStatus, errorThrown ) {
+				console.log( errorThrown );
+			}
+		});
+		
+	};
+	
+	var postLocation = function ( location, callback ) {
+		
+		var locations = [ location ];
 
-var mapLoaded = function (){
+		$jq.ajax( {
+			type: "post",
+			url: locationsURL(),
+			dataType: "json",
+			contentType: "application/json;charset=\"utf-8\"",
+		    processData: false,
+			data: JSON.stringify( locations ),
+			success: function( returned ) {
+				if ( callback ) {
+					callback( );
+				}
+				else {
+					// success( button, statusElement, "Opgeslagen" );
+				}
+			},
+			error: function(  jqXHR, textStatus, errorThrown ) {
+				console.log( errorThrown );
+			}
+		});
+		
+	};
 	
-    
-    for (i = 0; i < points.length; i++) {
-    	var point = points[ i ];
-    	var p = new XPoint(point);
-    	var s = createSymbol(iconPath, initColor);
-    	var graphic = new XGraphic(p,s);
-      	map.graphics.add(graphic);
+	var refreshRide = function ( uuid ) {
+		return getRide( uuid, $jq("#ride"), renderRide );
+	}
+	
+	var renderRide = function( tbody, result ) {
+		
+		var html = Mustache.to_html(ridesTemplate, result );
+		tbody.html( html );
+		
+	};
+	
+	var ping = function() {
+		
+		navigator.geolocation.getCurrentPosition( updateLocation, onError);
+		
+	}
+	
+	var updateLocation = function( location ) {
+		
+		var rideUuid = $jq( "#ride-uuid" ).val();
+		
+		var riderUuid = getRider();
+		
+		var l
+			= new Location( rideUuid, riderUuid, location.coords.latitude, location.coords.longitude );
+		
+		postLocation( l );
+		
+	}
+	
+	var track = function( ride ) {
+		
+		renderRide( ride );
+		window.setInterval( ping, 10000 );
+		
+	}
+	
+	var startRide = function( position ) {
+		
+		var uuid = $jq( "#ride-uuid" ).val();
+		
+		var ride 
+			= new Ride( uuid, "ROLLIN_IN_THE_DEEP", position.coords.latitude, position.coords.longitude );
+	
+		putRide( ride, $jq("#ride"), track );
+		
+		/*
+			('Latitude: '          + position.coords.latitude          + '\n' +
+              'Longitude: '         + position.coords.longitude         + '\n' +
+              'Altitude: '          + position.coords.altitude          + '\n' +
+              'Accuracy: '          + position.coords.accuracy          + '\n' +
+              'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+              'Heading: '           + position.coords.heading           + '\n' +
+              'Speed: '             + position.coords.speed             + '\n' +
+              'Timestamp: '         + position.timestamp                + '\n');
+        */
     };
+
+    // onError Callback receives a PositionError object
+    //
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+              'message: ' + error.message + '\n');
+    }
     
-};
+    $jq("#ride-start").click( function() {
+		
+		navigator.geolocation.getCurrentPosition( startRide, onError);
+		
+		
+	} );
 
-var createSymbol = function(path, color){
-    var markerSymbol = new esri.symbol.SimpleMarkerSymbol();
-    markerSymbol.setPath(path);
-    markerSymbol.setColor(new dojo.Color(color));
-    markerSymbol.setOutline(null);
-    return markerSymbol;
-};
+    try {
+    	var uuid = getParameter(window.location.href,"q");
+    	$jq("#ride-uuid").val( uuid );
+    	refreshRide( uuid );
+	}
+	catch( err ) {
+		console.error( err );
+	}
 
-
-jQuery( document ).ready(function() {
-
-	require([
-        "esri/map", "esri/geometry/Point", 
-        "esri/symbols/SimpleMarkerSymbol", "esri/graphic",
-        "dojo/_base/array", "dojo/dom-style", "dojox/widget/ColorPicker", 
-        "dojo/domReady!"
-      ], function(
-        Map, Point,
-        SimpleMarkerSymbol, Graphic,
-        arrayUtils, domStyle, ColorPicker ) {
-
-	/*
-	          var colorPicker = new ColorPicker({}, "picker1");
-	          colorPicker.setColor(initColor);
-	          domStyle.set(colorPicker, "left", "500px");
-	          colorPicker.on("change", function(){
-	            var colorCode = this.hexCode.value;
-	            map.graphics.graphics.forEach(function(graphic){
-	              graphic.setSymbol(createSymbol(iconPath, colorCode));
-	            });
-	          });	
-	          */
-			XMap = Map;
-			XPoint = Point;
-			XGraphic = Graphic;
-			getLocations( locationsReceived );
-        });
-
+	
 });
