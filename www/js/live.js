@@ -10,16 +10,46 @@ var points = [];
 var markerPath = "M11,11,L,12,11,L,12,12,L,11,12,Z";
 var markerColor = "#ce641d";
 
+var rideTemplate = "<div><h1>{{title}}</h1></div><div>{{description}}</div><div>{{status}}</div><div>";
+
+var locationsTemplate = "{{#.}}<div class=\"row\"><div class=\"col-xs-2\">{{moment}}</div><div class=\"col-xs-2\">{{latitude}}-{{longitude}}</div></div>{{/.}}";
+
 var rideURL = function ( uuid ) {
 	
 	return "https://vive-le-velo-backend.appspot.com/api/rides/" + uuid ;
 	
 };
 
-var locationsURL = function ( ) {
+var locationsURL = function ( rideUuid ) {
 	
-	return "https://vive-le-velo-backend.appspot.com/api/locations";
+	return "https://vive-le-velo-backend.appspot.com/api/locations?rideID=" + rideUuid;
 	
+};
+
+var renderRideAndLoadMap = function( result ) {
+	
+	var div = $jq("#ride");
+	
+	if ( 'OK' === result.value ) {
+		
+		var ride
+			= result.object;
+			
+		var html = Mustache.to_html( rideTemplate, ride );
+		div.html( html );
+			
+		loadMap( ride.start );
+		
+	}
+	
+};
+
+var renderLocations = function( locations ) {
+	
+	var div = $jq("#livestream");
+	var html = Mustache.to_html( locationsTemplate, locations );
+	div.html( html );
+			
 };
 
 var loadMap = function( center ) {
@@ -31,53 +61,17 @@ var loadMap = function( center ) {
           minZoom: 2
      });
 	 
-	 map.on( "load", getLocations );
+	 map.on( "load", loadLocations );
 	
 }
 
-var getRide = function ( uuid, callback ) {
+var loadLocations = function( ) {
 	
-	var u = rideURL( uuid ); 
+	var rideID = $jq("#ride-uuid").val( );
 	
-	$jq.ajax( {
-		type: "get",
-		url: u,
-		dataType: "json",
-	    processData: false,
-		success: function( returned ) {
-			if ( callback ) {
-				callback( returned.object.start );
-			}
-			else {
-				// success( button, statusElement, "Opgeslagen" );
-			}
-		},
-		error: function(  jqXHR, textStatus, errorThrown ) {
-			console.log( errorThrown );
-		}
-	});
+	var url = locationsURL( rideID );
 	
-};
-
-var getLocations = function ( ) {
-	
-	var rideUuid = $jq("#ride-uuid").val();
-	
-	var u
-		= locationsURL() + "?rideID=" + rideUuid + "&last=10";
-	
-	$jq.ajax( {
-		type: "get",
-		url: u,
-		dataType: "json",
-	    processData: false,
-		success: function( returned ) {
-			locationsReceived( returned );
-		},
-		error: function(  jqXHR, textStatus, errorThrown ) {
-			console.log( errorThrown );
-		}
-	});
+	getLocations( url, locationsReceived );
 	
 };
 
@@ -85,7 +79,7 @@ var locationsReceived = function( locations ) {
 	
 	for (i = 0; i < locations.length; i++) {
 		var location = locations[ i ];
-		var l = [ location.longitude, location.lattitude, location.color ];
+		var l = [ location.longitude, location.latitude, location.color ];
 		points.push( l );
 		
 		for (i = 0; i < points.length; i++) {
@@ -100,6 +94,8 @@ var locationsReceived = function( locations ) {
 		};
 		
 	};
+	
+	renderLocations( locations );
 	
 };
 
@@ -153,15 +149,18 @@ jQuery( document ).ready(function() {
 			
 
 		    try {
-		    	var uuid = getParameter(window.location.href,"q");
+		    	var uuid 
+		    		= getParameter(window.location.href,"q");
+		    	var url 
+	    			= rideURL( uuid );
+		    	
 		    	$jq("#ride-uuid").val( uuid );
-		    	getRide( uuid, loadMap );
+		    	
+		    	getRide( rideURL( uuid ), renderRideAndLoadMap );
 			}
 			catch( err ) {
 				console.error( err );
 			}
-			
-			
 			
         });
 

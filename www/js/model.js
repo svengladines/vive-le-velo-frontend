@@ -1,3 +1,5 @@
+var $jq = jQuery.noConflict();
+
 var Coordinate = function( latitude, longitude ) {
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -14,7 +16,7 @@ var Ride = function ( uuid, status, latitude, longitude ) {
 var Location = function ( rideUuid, riderUuid, latitude, longitude ) {
 	this.rideID = rideUuid;
 	this.riderID = riderUuid;
-	this.lattitude = latitude;
+	this.latitude = latitude;
 	this.longitude = longitude;
 	this.comment = null;
 	this.event = null;

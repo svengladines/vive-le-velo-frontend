@@ -38,6 +38,7 @@
         <script type="text/javascript" src="js/jquery-3.1.1.js"></script>
         <script type="text/javascript" src="js/mustache-2.3.0.js"></script>
         <script type="text/javascript" src="js/model.js"></script>
+        <script type="text/javascript" src="js/rest.js"></script>
         <script type="text/javascript" src="js/rotd.js"></script>
         <title>Ride of the day</title>
     </head>
@@ -88,6 +89,35 @@
   						<button class="btn btn-primary btn-play">play</button>
   						<button class="btn btn-primary btn-comment">comment</button>
   					</div>
+  				</div>
+  				
+  				<div id="event" class="row hidden">
+	  				<form class="form-horizontal">
+						<div class="form-group">
+							<div class="col-xs-offset-2 col-xs-4">
+			  					<div class="radio">
+					  					<input type="radio" name="ze-event" value="Lunch">Lunch</input>
+					  			</div>
+					  			<div class="radio">
+					  					<input type="radio" name="ze-event" value="Booze">Booze</input>
+					  			</div>
+					  			<div class="radio">
+					  					<input type="radio" name="ze-event" value="Crash">Crash</input>
+					  			</div>
+					  			<div class="radio">
+					  					<input type="radio" name="ze-event" value="Puncture">Puncture</input>
+					  			</div>
+					  			<div class="radio">
+					  					<input type="radio" name="ze-event" value="Shed">Shed</input>
+					  			</div>
+							</div>
+						</div>
+  						<div class="form-group">
+  							<div class="col-xs-offset-2 col-xs-4">
+  								<button id="whisper" type="button" class="btn btn-primary">Send</button>
+  							</div>
+  						</div>
+	  				</form>  					
   				</div>
   				
   				<div id="commentary" class="row hidden">

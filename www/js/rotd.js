@@ -1,8 +1,6 @@
 jQuery( document ).ready(function() {
 	
-	var $jq = jQuery.noConflict();
-	
-	var rideTemplate = "<div>{{title}}</div><div>{{description}}</div><div>{{status}}</div>";
+	var rideTemplate = "<div>{{title}}</div><div>{{description}}</div><div>{{status}}</div><div><a href=\"live.html?q={{uuid}}\">live</a></div>";
 	
 	var getRider = function() {
         var key = "userID";
@@ -10,6 +8,12 @@ jQuery( document ).ready(function() {
         var value = storage.getItem(key);
         return value;
      };
+     
+     var rideURL = function ( uuid ) {
+    		
+    		return "https://vive-le-velo-backend.appspot.com/api/rides/" + uuid ;
+    		
+    };
 	
 	var ridesURL = function () {
 		
@@ -20,13 +24,6 @@ jQuery( document ).ready(function() {
 	var locationsURL = function () {
 		
 		return "https://vive-le-velo-backend.appspot.com/api/locations";
-		
-	};
-	
-	var rideURL = function ( uuid ) {
-		
-		// return "https://vive-le-velo-backend.appspot.com/api/rides/" + uuid ;
-		return "https://vive-le-velo-backend.appspot.com/api/rides/" + uuid ;
 		
 	};
 	
@@ -44,28 +41,6 @@ jQuery( document ).ready(function() {
 			success: function( returned ) {
 				if ( callback ) {
 					callback( );
-				}
-				else {
-					// success( button, statusElement, "Opgeslagen" );
-				}
-			},
-			error: function(  jqXHR, textStatus, errorThrown ) {
-				console.log( errorThrown );
-			}
-		});
-		
-	};
-	
-	var getRides = function ( url, tbody, callback ) {
-		
-		$jq.ajax( {
-			type: "get",
-			url: url,
-			dataType: "json",
-		    processData: false,
-			success: function( result ) {
-				if ( callback ) {
-					callback( tbody, result );
 				}
 				else {
 					// success( button, statusElement, "Opgeslagen" );
@@ -165,20 +140,19 @@ jQuery( document ).ready(function() {
 		var ride
 			= new Ride( rideUuid, "ROLLIN_IN_THE_DEEP" );
 		
-		putRide( ride, $jq("#ride"), refreshPage );
+		var url 
+			= rideURL( rideUuid );
+	
+		putRide( url, ride,  $jq("#ride"), refreshPage );
 		
 	} );
 	
 	$jq("#pause").click( function() {
+		
+		$jq( ".actions" ).removeClass("show").addClass("hidden");
+		$jq( "#commentary" ).removeClass("show").addClass("hidden");
+		$jq( "#event" ).removeClass("hidden").addClass("show");
 		 
-		var rideUuid 
-			= $jq( "#ride-uuid" ).attr( "data-uuid" );
-		
-		var ride
-			= new Ride( rideUuid, "PAUZED" );
-		
-		putRide( ride, $jq("#ride"), refreshPage );
-		
 	} );
 	
 	$jq("#finish").click( function() {
@@ -189,7 +163,10 @@ jQuery( document ).ready(function() {
 		var ride
 			= new Ride( rideUuid, "FINITO" );
 		
-		putRide( ride, $jq("#ride"), refreshPage );
+		var url 
+			= rideURL( rideUuid );
+
+		putRide( url, ride,  $jq("#ride"), refreshPage );
 		
 	} );
 	
@@ -200,11 +177,32 @@ jQuery( document ).ready(function() {
 		
 	} );
 	
+	$jq("#whisper").click( function() {
+		
+		var rideUuid 
+			= $jq( "#ride-uuid" ).attr( "data-uuid" );
+		
+		var ride
+			= new Ride( rideUuid, "PAUZED" );
+		
+		var url 
+			= rideURL( rideUuid );
+
+		putRide( url, ride,  $jq("#ride"), whisper );
+		
+	} );
+	
 	$jq("#talk").click( function() {
 		 
 		navigator.geolocation.getCurrentPosition( talk, onError);
 		
 	} );
+	
+	var whisper = function() {
+		 
+		navigator.geolocation.getCurrentPosition( talk, onError);
+		
+	};
 	
 	var talk = function( location ) {
 		
@@ -243,32 +241,6 @@ jQuery( document ).ready(function() {
         */
     };
     
-var putRide = function ( ride, element, callback ) {
-		
-		var u = rideURL( ride.uuid );
-		
-		$jq.ajax( {
-			type: "put",
-			url: u,
-			dataType: "json",
-			contentType: "application/json;charset=\"utf-8\"",
-		    processData: false,
-			data: JSON.stringify( ride ),
-			success: function( returned ) {
-				if ( callback ) {
-					callback( element, returned );
-				}
-				else {
-					// success( button, statusElement, "Opgeslagen" );
-				}
-			},
-			error: function(  jqXHR, textStatus, errorThrown ) {
-				$jq("#error").html( errorThrown );
-			}
-		});
-		
-	};
-
     // onError Callback receives a PositionError object
     //
     function onError(error) {
