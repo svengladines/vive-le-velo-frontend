@@ -12,13 +12,13 @@ var markerColor = "#ce641d";
 
 var rideURL = function ( uuid ) {
 	
-	return "http://localhost:8067/api/rides/" + uuid ;
+	return "https://vive-le-velo-backend.appspot.com/api/rides/" + uuid ;
 	
 };
 
 var locationsURL = function ( ) {
 	
-	return "http://localhost:8067/api/locations";
+	return "https://vive-le-velo-backend.appspot.com/api/locations";
 	
 };
 
@@ -64,7 +64,7 @@ var getLocations = function ( ) {
 	var rideUuid = $jq("#ride-uuid").val();
 	
 	var u
-		= locationsURL() + "?rideID=" + rideUuid;
+		= locationsURL() + "?rideID=" + rideUuid + "&last=10";
 	
 	$jq.ajax( {
 		type: "get",

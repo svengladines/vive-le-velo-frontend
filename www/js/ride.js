@@ -44,13 +44,14 @@ jQuery( document ).ready(function() {
 
 	var rideURL = function ( uuid ) {
 		
-		return "http://localhost:8067/api/rides/" + uuid ;
+		// return "https://vive-le-velo-backend.appspot.com/api/rides/" + uuid ;
+		return "https://vive-le-velo-backend.appspot.com/api/rides/" + uuid ;
 		
 	};
 	
 	var locationsURL = function () {
 		
-		return "http://localhost:8067/api/locations";
+		return "https://vive-le-velo-backend.appspot.com/api/locations";
 		
 	};
 	
@@ -74,7 +75,7 @@ jQuery( document ).ready(function() {
 				}
 			},
 			error: function(  jqXHR, textStatus, errorThrown ) {
-				console.log( errorThrown );
+				$jq("#error").html( errorThrown );
 			}
 		});
 		
@@ -98,7 +99,7 @@ jQuery( document ).ready(function() {
 				}
 			},
 			error: function(  jqXHR, textStatus, errorThrown ) {
-				console.log( errorThrown );
+				$jq("#error").html( errorThrown );
 			}
 		});
 		
@@ -117,14 +118,14 @@ jQuery( document ).ready(function() {
 			data: JSON.stringify( locations ),
 			success: function( returned ) {
 				if ( callback ) {
-					callback( );
+					callback( returned );
 				}
 				else {
 					// success( button, statusElement, "Opgeslagen" );
 				}
 			},
 			error: function(  jqXHR, textStatus, errorThrown ) {
-				console.log( errorThrown );
+				$jq("#error").html( errorThrown );
 			}
 		});
 		
@@ -141,6 +142,28 @@ jQuery( document ).ready(function() {
 		
 	};
 	
+	var renderData = function( returned ) {
+		
+		if ( $jq.isArray( returned ) ) {
+			$jq("#long").html( returned[0].longitude );
+			$jq("#lat").html( returned[0].lattitude );
+			$jq("#moment").html( returned[0].moment );
+		}
+		else {
+			$jq("#long").html( returned.longitude );
+			$jq("#lat").html( returned.lattitude );
+			$jq("#moment").html( returned.moment );
+		}
+		
+	}
+	
+	var renderLocation = function( location ) {
+		
+		$jq("#long").html( location.coords.longitude );
+		$jq("#lat").html( location.coords.latitude );
+		
+	}
+	
 	var ping = function() {
 		
 		navigator.geolocation.getCurrentPosition( updateLocation, onError);
@@ -156,7 +179,7 @@ jQuery( document ).ready(function() {
 		var l
 			= new Location( rideUuid, riderUuid, location.coords.latitude, location.coords.longitude );
 		
-		postLocation( l );
+		postLocation( l, renderData );
 		
 	}
 	
@@ -191,13 +214,13 @@ jQuery( document ).ready(function() {
     // onError Callback receives a PositionError object
     //
     function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
+    	$jq("#error").html( error.message );
     }
     
     $jq("#ride-start").click( function() {
 		
-		navigator.geolocation.getCurrentPosition( startRide, onError);
+    	// navigator.geolocation.getCurrentPosition( renderLocation, onError, { timeout: 20000, enableHighAccuracy: true } );
+		navigator.geolocation.getCurrentPosition( startRide, onError, { timeout: 20000, enableHighAccuracy: true } );
 		
 		
 	} );
@@ -208,7 +231,7 @@ jQuery( document ).ready(function() {
     	refreshRide( uuid );
 	}
 	catch( err ) {
-		console.error( err );
+		$jq("#error").html( err );
 	}
 
 	

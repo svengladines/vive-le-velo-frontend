@@ -33,7 +33,7 @@
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
         <link rel="stylesheet" type="text/css" href="css/index.css">
-        <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.5.css">
         <script type="text/javascript" src="js/jquery-3.1.1.js"></script>
         <script type="text/javascript" src="js/mustache-2.3.0.js"></script>
         <script type="text/javascript" src="js/rides.js"></script>
@@ -41,24 +41,24 @@
     </head>
     <body>
     
-    <table>
-    	<thead>
-    	</thead>
-    	<tbody id="rides">
-    	</tbody>
-    </table>
-	<form>
-		<div data-role="page" id="index">
+		<div id="content">
  
-			<div data-role="content">
-				<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align: center" id="custom-fieldset">
-					<input id="add" type="button" value="Add ride" />
-				</fieldset>
-			</div> 
+			<div class="row">
 			
-			<span id="coord"></span>
+				<table class="">
+	    			<thead>
+	    			</thead>
+	    			<tbody id="rides">
+	    					<tr id="listener" class="event listening"><td colspan="3">Loading rides...</td></tr>
+	    				</tbody>
+	    			</table>
+	    
+	    
+					<button id="add" class="btn btn-primary">Add ride</button>
+				</div> 
+				
+				<span id="coord"></span>
  
 		</div> 
-	</form>
 </body>
 </html>

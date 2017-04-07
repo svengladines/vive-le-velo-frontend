@@ -1,25 +1,15 @@
-var $jq = jQuery.noConflict();
-
-var storeActor = function( userID ) {
-        var key = "userID";
-	var storage = window.localStorage;
-	storage.setItem(key, userID );
-}
-
 jQuery( document ).ready(function() {
 	
-	var Coordinate = function( latitude, longitude ) {
-		this.latitude = latitude;
-		this.longitude = longitude;
+	var $jq = jQuery.noConflict();
+	
+	var storeActor = function( userID ) {
+	    var key = "userID";
+		var storage = window.localStorage;
+		storage.setItem(key, userID );
 	}
 	
-	var Ride = function ( latitude, longitude ) {
-		this.start = new Coordinate( latitude, longitude );
-	};
-
 	var ridesURL = function () {
-		
-		return "http://localhost:8067/api/rides";
+		return "https://vive-le-velo-backend.appspot.com/api/rides";
 		
 	};
 	
@@ -76,7 +66,7 @@ jQuery( document ).ready(function() {
 		return getRides( $jq("#rides"), renderRides );
 	}
 	
-	var ridesTemplate = "{{#object}}<tr><td>{{object.title}}</td><td><a href=\"follow.html?q={{object.uuid}}\">Follow</a></td><td><a href=\"ride.html?q={{object.uuid}}\">Ride</a></td><td>{{object.start.latitude}}</td><td>{{object.start.longitude}}</td></tr>{{/object}}";
+	var ridesTemplate = "{{#object}}<tr><td><a href=\"ride.html?q={{object.uuid}}\">{{object.title}}</a></td><td>{{object.status}}</td></tr><tr><td colspan=\"2\">{{#riders}}{{.}}{{/riders}}</td></tr>{{/object}}";
 	
 	var renderRides = function( tbody, result ) {
 		
@@ -118,7 +108,7 @@ jQuery( document ).ready(function() {
     }
 
     try {
-    	
+    	refreshRides();
 	}
 	catch( err ) {
 		alert("error");
