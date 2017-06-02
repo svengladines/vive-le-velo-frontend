@@ -14,7 +14,7 @@ jQuery( document ).ready(function() {
 			
 	}, false );
 	
-	var rideTemplate = "<div class=\"mdl-card mdl-shadow--2dp\"><div class=\"mdl-card__title\"><h2 class=\"mdl-card__title-text\">{{title}}</h2></div><div class=\"mdl-card__supporting-text\">{{description}}description</div><div class=\"mdl-card__actions mdl-card--border\"><a class=\"mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect\"><i class=\"material-icons\">play_circle_outline</i></a><a class=\"mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect\"><i class=\"material-icons\">pause_circle_outline</i></a><a class=\"mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect\"><i class=\"material-icons\">stop</i></a></div><div class=\"mdl-card__menu\"><button class=\"mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect\"><i class=\"material-icons\">create</i></button></div></div>";
+	var rideTemplate = $jq("#rideTemplate").html();
 	var statusTemplate = "<div>#{{length}}</div>";
 	
 	var getRider = function() {
@@ -157,7 +157,7 @@ var renderStatus = function( locations ) {
 		
 };
 	
-	$jq(".btn-play").click( function() {
+	$jq("#join").click( function() {
 		 
 		var rideUuid 
 			= $jq( "#ride-uuid" ).attr( "data-uuid" );
@@ -172,7 +172,7 @@ var renderStatus = function( locations ) {
 		
 	} );
 	
-	$jq("#pause").click( function() {
+	$jq("#event").click( function() {
 		
 		$jq( ".actions" ).removeClass("show").addClass("hidden");
 		$jq( "#commentary" ).removeClass("show").addClass("hidden");
@@ -180,7 +180,7 @@ var renderStatus = function( locations ) {
 		 
 	} );
 	
-	$jq("#finish").click( function() {
+	$jq("#unjoin").click( function() {
 		 
 		var rideUuid 
 			= $jq( "#ride-uuid" ).attr( "data-uuid" );

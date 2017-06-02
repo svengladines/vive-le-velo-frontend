@@ -66,7 +66,7 @@ jQuery( document ).ready(function() {
 		return getRides( $jq("#rides"), renderRides );
 	}
 	
-	var ridesTemplate = "{{#object}}<li class=\"mdl-list__item mdl-list__item--three-line\"><span class=\"mdl-list__item-primary-content\"><i class=\"material-icons mdl-list__item-avatar\">person</i><a href=\"rotd.html?q={{object.uuid}}\">{{object.title}}</a><span class=\"mdl-list__item-text-body\">Svekke, Reini</span></span><span class=\"mdl-list__item-secondary-content\"><a class=\"mdl-list__item-secondary-action\" href=\"#\"><i class=\"material-icons\">star</i></a></span></li>{{/object}}";
+	var ridesTemplate = $jq("#ridesTemplate").html();
 	
 	var renderRides = function( tbody, result ) {
 		
