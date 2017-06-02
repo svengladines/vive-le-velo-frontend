@@ -19,3 +19,8 @@
 .svekke {
 	color: #ffffff;
 }
+
+.mdl-card__title {
+  color: #fff;
+  background-color: #46B6AC;
+}

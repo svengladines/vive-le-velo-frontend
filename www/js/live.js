@@ -12,17 +12,17 @@ var markerColor = "#ce641d";
 
 var rideTemplate = "<div><h1>{{title}}</h1></div><div>{{description}}</div><div>{{status}}</div><div>";
 
-var locationsTemplate = "{{#.}}<div class=\"row\"><div class=\"col-xs-2\">{{moment}}</div><div class=\"col-xs-2\">{{latitude}}-{{longitude}}</div></div>{{/.}}";
+var locationsTemplate = "<div class=\"row\"><div class=\"col-xs-2\">#{{length}}</div></div>{{#.}}<div class=\"row\"><div class=\"col-xs-2\">{{moment}}</div><div class=\"col-xs-2\">{{latitude}}-{{longitude}}</div></div>{{/.}}";
 
 var rideURL = function ( uuid ) {
 	
-	return "https://vive-le-velo-backend.appspot.com/api/rides/" + uuid ;
+	return url( "/rides/" + uuid ) ;
 	
 };
 
 var locationsURL = function ( rideUuid ) {
 	
-	return "https://vive-le-velo-backend.appspot.com/api/locations?rideID=" + rideUuid;
+	return url( "/locations?rideID=" + rideUuid );
 	
 };
 

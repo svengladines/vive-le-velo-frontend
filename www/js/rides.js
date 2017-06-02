@@ -9,7 +9,7 @@ jQuery( document ).ready(function() {
 	}
 	
 	var ridesURL = function () {
-		return "https://vive-le-velo-backend.appspot.com/api/rides";
+		return url ("/rides" );
 		
 	};
 	
@@ -66,7 +66,7 @@ jQuery( document ).ready(function() {
 		return getRides( $jq("#rides"), renderRides );
 	}
 	
-	var ridesTemplate = "{{#object}}<tr><td><a href=\"ride.html?q={{object.uuid}}\">{{object.title}}</a></td><td>{{object.status}}</td></tr><tr><td colspan=\"2\">{{#riders}}{{.}}{{/riders}}</td></tr>{{/object}}";
+	var ridesTemplate = "{{#object}}<li class=\"mdl-list__item mdl-list__item--three-line\"><span class=\"mdl-list__item-primary-content\"><i class=\"material-icons mdl-list__item-avatar\">person</i><a href=\"rotd.html?q={{object.uuid}}\">{{object.title}}</a><span class=\"mdl-list__item-text-body\">Svekke, Reini</span></span><span class=\"mdl-list__item-secondary-content\"><a class=\"mdl-list__item-secondary-action\" href=\"#\"><i class=\"material-icons\">star</i></a></span></li>{{/object}}";
 	
 	var renderRides = function( tbody, result ) {
 		
@@ -84,7 +84,7 @@ jQuery( document ).ready(function() {
 	var createRide = function(position) {
 		
 		var ride 
-			= new Ride( position.latitude, position.latitude );
+			= new Ride( null, null, position.coords.latitude, position.coords.longitude );
 	
 		postRide( ride, refreshRides );
 		

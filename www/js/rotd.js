@@ -1,6 +1,21 @@
+var trackTimer;
+var status;
+
+
 jQuery( document ).ready(function() {
 	
-	var rideTemplate = "<div>{{title}}</div><div>{{description}}</div><div>{{status}}</div><div><a href=\"live.html?q={{uuid}}\">live</a></div>";
+	document.addEventListener('deviceready', function () {
+		
+		if ( ! cordova.plugins.backgroundMode.isEnabled() ) {
+			
+			cordova.plugins.backgroundMode.enable();
+			
+		}
+			
+	}, false );
+	
+	var rideTemplate = "<div class=\"mdl-card mdl-shadow--2dp\"><div class=\"mdl-card__title\"><h2 class=\"mdl-card__title-text\">{{title}}</h2></div><div class=\"mdl-card__supporting-text\">{{description}}description</div><div class=\"mdl-card__actions mdl-card--border\"><a class=\"mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect\"><i class=\"material-icons\">play_circle_outline</i></a><a class=\"mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect\"><i class=\"material-icons\">pause_circle_outline</i></a><a class=\"mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect\"><i class=\"material-icons\">stop</i></a></div><div class=\"mdl-card__menu\"><button class=\"mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect\"><i class=\"material-icons\">create</i></button></div></div>";
+	var statusTemplate = "<div>#{{length}}</div>";
 	
 	var getRider = function() {
         var key = "userID";
@@ -11,19 +26,28 @@ jQuery( document ).ready(function() {
      
      var rideURL = function ( uuid ) {
     		
-    		return "https://vive-le-velo-backend.appspot.com/api/rides/" + uuid ;
+    		return url( "/rides/" + uuid );
     		
     };
 	
 	var ridesURL = function () {
 		
-		return "https://vive-le-velo-backend.appspot.com/api/rides?today=true";
+		return url( "/rides?today=true" );
 		
 	};
 	
-	var locationsURL = function () {
+	var locationsURL = function ( uuid ) {
 		
-		return "https://vive-le-velo-backend.appspot.com/api/locations";
+		var u = "";
+		
+		if ( uuid ) {
+			u = url ( "/locations?rideID=" + uuid ); 
+		}
+		else {
+			u = url ( "/locations") ;
+		}
+		
+		return u;
 		
 	};
 	
@@ -126,11 +150,12 @@ jQuery( document ).ready(function() {
 		
 	};
 	
-	$jq("#add").click( function() {
-		 
-		navigator.geolocation.getCurrentPosition( createRide, onError);
+var renderStatus = function( locations ) {
+	var div = $jq("#status");
+	var html = Mustache.to_html( statusTemplate, locations );
+	div.html( html );
 		
-	} );
+};
 	
 	$jq(".btn-play").click( function() {
 		 
@@ -143,7 +168,7 @@ jQuery( document ).ready(function() {
 		var url 
 			= rideURL( rideUuid );
 	
-		putRide( url, ride,  $jq("#ride"), refreshPage );
+		putRide( url, ride,  $jq("#ride"), track );
 		
 	} );
 	
@@ -165,6 +190,8 @@ jQuery( document ).ready(function() {
 		
 		var url 
 			= rideURL( rideUuid );
+		
+		untrack();
 
 		putRide( url, ride,  $jq("#ride"), refreshPage );
 		
@@ -187,6 +214,8 @@ jQuery( document ).ready(function() {
 		
 		var url 
 			= rideURL( rideUuid );
+		
+		untrack();
 
 		putRide( url, ride,  $jq("#ride"), whisper );
 		
@@ -225,7 +254,7 @@ jQuery( document ).ready(function() {
 	var createRide = function(position) {
 		
 		var ride 
-			= new Ride( null, null, position.coords.latitude, position.coords.latitude );
+			= new Ride( null, null, position.coords.latitude, position.coords.longitude );
 	
 		postRide( ride, refresh );
 		
@@ -240,6 +269,48 @@ jQuery( document ).ready(function() {
               'Timestamp: '         + position.timestamp                + '\n');
         */
     };
+    
+    var ping = function() {
+		
+		navigator.geolocation.getCurrentPosition( pong, onError);
+		
+	}
+    
+    var loadLocations = function( ) {
+    	
+    	var rideID = $jq( "#ride-uuid" ).attr("data-uuid");
+    	
+    	var url = locationsURL( rideID );
+    	
+    	getLocations( url, renderStatus );
+    	
+    };
+	
+	var pong = function( location ) {
+		
+		var rideUuid = $jq( "#ride-uuid" ).attr("data-uuid");
+		
+		var riderUuid = getRider();
+		
+		var l
+			= new Location( rideUuid, riderUuid, location.coords.latitude, location.coords.longitude );
+		
+		postLocation( l, loadLocations );
+		
+	}
+	
+	var track = function( ) {
+		
+		trackTimer = window.setInterval( ping, 10000 );
+		
+	}
+	
+	var untrack = function( ) {
+		
+		window.clearInterval( trackTimer  );
+		
+		
+	}
     
     // onError Callback receives a PositionError object
     //

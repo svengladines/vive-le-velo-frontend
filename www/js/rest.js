@@ -1,3 +1,10 @@
+var scheme = "http://localhost:8067";
+// var scheme = "http://vive-le-velo-backend.appspot.com";
+
+var url = function ( sub ) {
+	return scheme + "/api" + sub;
+}
+
 var getRide = function ( url, callback ) {
 	
 	$jq.ajax( {
