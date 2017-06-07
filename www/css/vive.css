@@ -1,0 +1,16 @@
+.vive-layout-transparent > .mdl-layout__header {
+  background: url('../img/transparent.jpg') center / cover;
+}
+
+.vive-layout-transparent .mdl-layout__header, .vive-layout-transparent .mdl-layout__drawer-button {
+  /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+  color: white;
+}
+
+.vive-fab {
+  position: absolute;
+  left: 40px;
+  top: 36px;
+  z-index: 999;
+}
