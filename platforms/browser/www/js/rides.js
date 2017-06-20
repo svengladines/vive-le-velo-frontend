@@ -1,27 +1,12 @@
-var $jq = jQuery.noConflict();
-
-var storeActor = function( userID ) {
-        var key = "userID";
-	var storage = window.localStorage;
-	storage.setItem(key, userID );
-}
-
 jQuery( document ).ready(function() {
 	
-	var Coordinate = function( latitude, longitude ) {
-		this.latitude = latitude;
-		this.longitude = longitude;
-	}
+	var $jq = jQuery.noConflict();
 	
-	var Ride = function ( latitude, longitude ) {
-		this.start = new Coordinate( latitude, longitude );
-	};
-
-	var ridesURL = function () {
-		
-		return "http://localhost:8067/api/rides";
-		
-	};
+	var storeActor = function( userID ) {
+	    var key = "userID";
+		var storage = window.localStorage;
+		storage.setItem(key, userID );
+	}
 	
 	var postRide = function ( ride, callback ) {
 		
@@ -76,7 +61,7 @@ jQuery( document ).ready(function() {
 		return getRides( $jq("#rides"), renderRides );
 	}
 	
-	var ridesTemplate = "{{#object}}<tr><td>{{object.title}}</td><td>{{object.start.latitude}}</td><td>{{object.start.longitude}}</td></tr>{{/object}}";
+	var ridesTemplate = $jq("#ridesTemplate").html();
 	
 	var renderRides = function( tbody, result ) {
 		
@@ -94,7 +79,7 @@ jQuery( document ).ready(function() {
 	var createRide = function(position) {
 		
 		var ride 
-			= new Ride( position.latitude, position.latitude );
+			= new Ride( null, null, position.coords.latitude, position.coords.longitude );
 	
 		postRide( ride, refreshRides );
 		
@@ -118,7 +103,7 @@ jQuery( document ).ready(function() {
     }
 
     try {
-    	
+    	refreshRides();
 	}
 	catch( err ) {
 		alert("error");

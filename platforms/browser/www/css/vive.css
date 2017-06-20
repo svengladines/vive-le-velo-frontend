@@ -1,0 +1,35 @@
+.vive-layout-transparent > .mdl-layout__header {
+  background: url('../img/transparent.jpg') center / cover;
+}
+
+.vive-layout-transparent .mdl-layout__header, .vive-layout-transparent .mdl-layout__drawer-button {
+  /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+  color: white;
+}
+
+.vive-fab {
+  position: absolute;
+  left: 40px;
+  top: 36px;
+  z-index: 999;
+}
+
+main > .mdl-layout__tab-panel {
+  padding: 8px;
+  padding-top: 48px;
+}
+
+.mdl-vive .mdl-layout__content section:not(:last-of-type) {
+    position: relative;
+    margin-bottom: 48px;
+}
+
+.mdl-vive section.section--center {
+    max-width: 860px;
+}
+
+.vive-card-center {
+	margin-left: auto;
+  	margin-right: auto;
+}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Vive Le Velo</title>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/3.20/esri/css/jsapi.css"/>
+    <link rel="stylesheet" href="css/bootstrap-3.3.5.css"/>
+    <link rel="stylesheet" href="css/live.css"/>
+    
+    <script type="text/javascript" src="js/jquery-3.1.1.js"></script>
+    <script src="js/mustache-2.3.0.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://js.arcgis.com/3.20/"></script>
+    <script src="js/model.js"></script>
+    <script src="js/rest.js"></script>
+    <script src="js/live.js"></script>
+
+    <style>
+
+        path[data-rider="reini"] {
+            fill: none;
+            stroke: #f5cb00;
+            stroke-width: 3;
+            stroke-opacity: 1;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        path[data-rider="john"] {
+            fill: none;
+            stroke: #f67682;
+            stroke-width: 5;
+            stroke-opacity: 0.85;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        path[data-rider="krikke"] {
+            fill: none;
+            stroke: #f75e64;
+            stroke-width: 12;
+            stroke-opacity: 0.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        path[data-rider="svekke"] {
+            fill: none;
+            stroke: #f72d3f;
+            stroke-width: 11;
+            stroke-opacity: 0.45;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        #legend svg {
+            vertical-align: middle;
+        }
+    </style>
+
+</head>
+
+<body>
+
+ 	<div class="container">
+  	
+  		<span id="ride-uuid"></span>
+  		
+  		<div id="ride" class="row">
+  		
+  			<div class="col-xs-12">
+  			</div>
+  		
+  		</div>
+  		
+  		<div class="row">
+  		
+  			<div class="col-xs-2">
+  			</div>
+  		
+  			<div id="map" class="col-xs-6">
+  				
+  			</div>
+  			
+  			<div class="col-xs-2">
+		            <div>
+		                <strong>Riders</strong>
+		                <p>
+		                	<span class="reini">Reini</span><br/>
+		                	<span class="krikke">Kris</span><br/>
+		                	<span class="john">John</span><br/>
+		                	<span class="svekke">Svekke</span><br/>
+		                </p>
+		            </div>
+			</div>
+  			
+		</div>
+		
+		<div id="stream" class="row">
+  		
+  			<div class="col-xs-12">
+  			
+  				<h2>Livestream</h2>
+  				<div id="livestream" class="container-fluid">
+  				
+  				
+  				</div>
+  				
+  			</div>
+  		
+  		</div>
+    
+	</div>
+	
+</body>
+
+</html>

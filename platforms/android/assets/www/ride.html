@@ -28,7 +28,7 @@
             * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:; connect-src http://*">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; script-src * 'self'; style-src * 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:; connect-src http://*">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
@@ -44,7 +44,7 @@
     <table>
     	<thead>
     	</thead>
-    	<tbody id="rides">
+    	<tbody id="ride">
     	</tbody>
     </table>
 	<form>
@@ -52,13 +52,22 @@
  
 			<div data-role="content">
 				<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align: center" id="custom-fieldset">
-					<input id="add" type="button" value="Add ride" />
+					<label for="actor"> ID </label>
+					<input id="ride-uuid" type="hidden"/>
+					<input id="ride-start" type="button" value="Start" class="ride-status" data-status="ROLLIN_IN_THE_DEEP"/>
+					<input id="pause" type="button" value="Pause" class="ride-status" data-status="PAUZED"/>
+					<input id="pause" type="button" value="Finish" class="ride-status" data-status="FINITO"/>
 				</fieldset>
 			</div> 
-			
-			<span id="coord">?</span>
- 
+				
 		</div> 
 	</form>
+	<div>
+		<div>
+			<span>location:</span> <span id="lat"></span>,<span id="long"></span>
+			<span>moment:</span> <span id="moment"></span>
+			<span>error:</span> <span id="error"></span>
+		</div>				
+	</div> 
 </body>
 </html>

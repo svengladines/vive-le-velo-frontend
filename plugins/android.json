@@ -12,10 +12,19 @@
         },
         "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "be.occam.velo.frontend"
+        },
+        "cordova-plugin-background-mode": {
+            "PACKAGE_NAME": "be.occam.velo.frontend"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "be.occam.velo.frontend"
         }
     },
     "dependent_plugins": {
         "cordova-plugin-compat": {
+            "PACKAGE_NAME": "be.occam.velo.frontend"
+        },
+        "cordova-plugin-device": {
             "PACKAGE_NAME": "be.occam.velo.frontend"
         }
     }
