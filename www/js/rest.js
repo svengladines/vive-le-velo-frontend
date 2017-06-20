@@ -5,6 +5,21 @@ var url = function ( sub ) {
 	return scheme + "/api" + sub;
 }
 
+var locationsURL = function ( rideID ) {
+	return url ("/locations?rideID=" + rideID );
+	
+};
+
+var ridesURL = function () {
+	return url ("/rides" );
+	
+};
+
+var rideURL = function ( uuid ) {
+	return url ("/rides/" + uuid );
+	
+};
+
 var getRide = function ( url, callback ) {
 	
 	$jq.ajax( {

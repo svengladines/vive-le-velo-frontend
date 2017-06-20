@@ -4,23 +4,20 @@
 	background-color: #dddddd;
 }
 
-.reini {
-	color: #ff0000;
+.demo-charts {
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
-
-.krikke {
-	color: #00ff00;
+.demo-chart:nth-child(1) {
+  color: #ACEC00;
 }
-
-.john {
-	color: #0000ff;
+.demo-chart:nth-child(2) {
+  color: #00BBD6;
 }
-
-.svekke {
-	color: #ffffff;
+.demo-chart:nth-child(3) {
+  color: #BA65C9;
 }
-
-.mdl-card__title {
-  color: #fff;
-  background-color: #46B6AC;
+.demo-chart:nth-child(4) {
+  color: #EF3C79;
 }

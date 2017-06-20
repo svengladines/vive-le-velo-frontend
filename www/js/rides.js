@@ -8,11 +8,6 @@ jQuery( document ).ready(function() {
 		storage.setItem(key, userID );
 	}
 	
-	var ridesURL = function () {
-		return url ("/rides" );
-		
-	};
-	
 	var postRide = function ( ride, callback ) {
 		
 		var rides = [ ride ];

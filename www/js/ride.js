@@ -1,10 +1,6 @@
 var $jq = jQuery.noConflict();
 
-jQuery( document ).ready(function() {
-	
-	var ridesTemplate = "<tr><td>{{object.title}}</td><td><a href=\"follow.html?q={{object.uuid}}\">Follow</a></td><td><a href=\"ride.html?q={{object.uuid}}\">Ride</a></td><td>{{object.status}}</td><td>{{object.start.latitude}}</td><td>{{object.start.longitude}}</td></tr>";
-	
-	var getParameter = function (url, key) {
+var getParameter = function (url, key) {
 		var urlParts = url.split('?');
 	    var sURLVariables = urlParts[1].split('&');
 	    for (var i = 0; i < sURLVariables.length; i++) 
@@ -15,7 +11,7 @@ jQuery( document ).ready(function() {
 	            return sParameterName[1];
 	        }
 	    }
-	};
+};
 	
 	var getRider = function() {
         var key = "userID";
@@ -24,86 +20,15 @@ jQuery( document ).ready(function() {
         return value;
      };
 	
-	var Coordinate = function( latitude, longitude ) {
-		this.latitude = latitude;
-		this.longitude = longitude;
-	};
-	
-	var Ride = function ( uuid, status, latitude, longitude ) {
-		this.start = new Coordinate( latitude, longitude );
-		this.status = status;
-		this.uuid = uuid;
-	};
-	
-	var Location = function ( rideUuid, riderUuid, latitude, longitude ) {
-		this.rideID = rideUuid;
-		this.riderID = riderUuid;
-		this.lattitude = latitude;
-		this.longitude = longitude;
-	}
-
-	var rideURL = function ( uuid ) {
-		
-		// return "https://vive-le-velo-backend.appspot.com/api/rides/" + uuid ;
-		return "https://vive-le-velo-backend.appspot.com/api/rides/" + uuid ;
-		
-	};
-	
-	var locationsURL = function () {
-		
-		return "https://vive-le-velo-backend.appspot.com/api/locations";
-		
-	};
-	
-	var putRide = function ( ride, tbody, callback ) {
-		
-		var u = rideURL( ride.uuid );
-		
-		$jq.ajax( {
-			type: "put",
-			url: u,
-			dataType: "json",
-			contentType: "application/json;charset=\"utf-8\"",
-		    processData: false,
-			data: JSON.stringify( ride ),
-			success: function( returned ) {
-				if ( callback ) {
-					callback( tbody, returned );
-				}
-				else {
-					// success( button, statusElement, "Opgeslagen" );
-				}
-			},
-			error: function(  jqXHR, textStatus, errorThrown ) {
-				$jq("#error").html( errorThrown );
-			}
-		});
-		
-	};
-	
-	var getRide = function ( uuid, tbody, callback ) {
-		
-		var u = rideURL( uuid ); 
-		
-		$jq.ajax( {
-			type: "get",
-			url: u,
-			dataType: "json",
-		    processData: false,
-			success: function( returned ) {
-				if ( callback ) {
-					callback( tbody, returned );
-				}
-				else {
-					// success( button, statusElement, "Opgeslagen" );
-				}
-			},
-			error: function(  jqXHR, textStatus, errorThrown ) {
-				$jq("#error").html( errorThrown );
-			}
-		});
-		
-	};
+	var loadLocations = function( ) {
+    	
+    	var rideID = $jq( "#ride-uuid" ).attr("data-uuid");
+    	
+    	var url = locationsURL( rideID );
+    	
+    	getLocations( url, renderLocations );
+    	
+    };
 	
 	var postLocation = function ( location, callback ) {
 		
@@ -131,8 +56,8 @@ jQuery( document ).ready(function() {
 		
 	};
 	
-	var refreshRide = function ( uuid ) {
-		return getRide( uuid, $jq("#ride"), renderRide );
+	var loadRide = function ( uuid ) {
+		return getRide( rideURL( uuid ), loadLocations );
 	}
 	
 	var renderRide = function( tbody, result ) {
@@ -163,6 +88,14 @@ jQuery( document ).ready(function() {
 		$jq("#lat").html( location.coords.latitude );
 		
 	}
+	
+	var renderLocations = function( locations ) {
+		var div = $jq("#vive-locations");
+		var locationsTemplate = $jq("#locationsTemplate").html();
+		var html = Mustache.to_html( locationsTemplate, locations );
+		div.html( html );
+			
+	};
 	
 	var ping = function() {
 		
@@ -215,24 +148,28 @@ jQuery( document ).ready(function() {
     //
     function onError(error) {
     	$jq("#error").html( error.message );
+    	console.error( error );
     }
     
-    $jq("#ride-start").click( function() {
-		
-    	// navigator.geolocation.getCurrentPosition( renderLocation, onError, { timeout: 20000, enableHighAccuracy: true } );
-		navigator.geolocation.getCurrentPosition( startRide, onError, { timeout: 20000, enableHighAccuracy: true } );
-		
-		
-	} );
+$jq("#ride-start").click( function() {
+	
+	// navigator.geolocation.getCurrentPosition( renderLocation, onError, { timeout: 20000, enableHighAccuracy: true } );
+	navigator.geolocation.getCurrentPosition( startRide, onError, { timeout: 20000, enableHighAccuracy: true } );
+	
+	
+} );
+    
+jQuery( document ).ready(function() {
 
     try {
     	var uuid = getParameter(window.location.href,"q");
-    	$jq("#ride-uuid").val( uuid );
-    	refreshRide( uuid );
+    	$jq( "#ride-uuid" ).attr("data-uuid", uuid );
+    	loadRide( uuid );
 	}
 	catch( err ) {
 		$jq("#error").html( err );
+		console.error( err );
 	}
 
-	
+
 });
