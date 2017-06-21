@@ -1,4 +1,11 @@
 var $jq = jQuery.noConflict();
+var tracker;
+
+var rideID = function () {
+
+    	return $jq( "#ride-uuid" ).attr("data-uuid");
+
+};
 
 var getParameter = function (url, key) {
 		var urlParts = url.split('?');
@@ -20,66 +27,42 @@ var getParameter = function (url, key) {
         return value;
      };
 	
-	var loadLocations = function( ) {
+var loadLocations = function( ) {
     	
-    	var rideID = $jq( "#ride-uuid" ).attr("data-uuid");
+	var url = locationsURL( rideID() );
     	
-    	var url = locationsURL( rideID );
+	getLocations( url, renderLocations );
     	
-    	getLocations( url, renderLocations );
-    	
-    };
+};
 	
-	var postLocation = function ( location, callback ) {
-		
-		var locations = [ location ];
+var postLocation = function ( location, callback ) {
+	
+	var locations = [ location ];
 
-		$jq.ajax( {
-			type: "post",
-			url: locationsURL(),
-			dataType: "json",
-			contentType: "application/json;charset=\"utf-8\"",
-		    processData: false,
-			data: JSON.stringify( locations ),
-			success: function( returned ) {
-				if ( callback ) {
-					callback( returned );
-				}
-				else {
-					// success( button, statusElement, "Opgeslagen" );
-				}
-			},
-			error: function(  jqXHR, textStatus, errorThrown ) {
-				$jq("#error").html( errorThrown );
+	$jq.ajax( {
+		type: "post",
+		url: locationsURL(),
+		dataType: "json",
+		contentType: "application/json;charset=\"utf-8\"",
+	    processData: false,
+		data: JSON.stringify( locations ),
+		success: function( returned ) {
+			if ( callback ) {
+				callback( returned );
 			}
-		});
-		
-	};
+			else {
+				// success( button, statusElement, "Opgeslagen" );
+			}
+		},
+		error: function(  jqXHR, textStatus, errorThrown ) {
+			$jq("#error").html( errorThrown );
+		}
+	});
+	
+};
 	
 	var loadRide = function ( uuid ) {
 		return getRide( rideURL( uuid ), loadLocations );
-	}
-	
-	var renderRide = function( tbody, result ) {
-		
-		var html = Mustache.to_html(ridesTemplate, result );
-		tbody.html( html );
-		
-	};
-	
-	var renderData = function( returned ) {
-		
-		if ( $jq.isArray( returned ) ) {
-			$jq("#long").html( returned[0].longitude );
-			$jq("#lat").html( returned[0].lattitude );
-			$jq("#moment").html( returned[0].moment );
-		}
-		else {
-			$jq("#long").html( returned.longitude );
-			$jq("#lat").html( returned.lattitude );
-			$jq("#moment").html( returned.moment );
-		}
-		
 	}
 	
 	var renderLocation = function( location ) {
@@ -89,60 +72,53 @@ var getParameter = function (url, key) {
 		
 	}
 	
-	var renderLocations = function( locations ) {
-		var div = $jq("#vive-locations");
-		var locationsTemplate = $jq("#locationsTemplate").html();
-		var html = Mustache.to_html( locationsTemplate, locations );
-		div.html( html );
+var renderLocations = function( locations ) {
+	var l = { locations: locations, last:locations[locations.length-1] };
+	var locationsDiv = $jq("#vive-locations");
+	var locationsTemplate = $jq("#locationsTemplate").html();
+	var html = Mustache.to_html( locationsTemplate, l );
+	locationsDiv.html( html );
 			
-	};
+};
 	
-	var ping = function() {
+var ping = function() {
 		
-		navigator.geolocation.getCurrentPosition( updateLocation, onError);
+	navigator.geolocation.getCurrentPosition( updateLocation, onError, { timeout: 20000, enableHighAccuracy: true } );
 		
-	}
+};
 	
-	var updateLocation = function( location ) {
+var updateLocation = function( position ) {
 		
-		var rideUuid = $jq( "#ride-uuid" ).val();
+	var rideUuid = rideID();
 		
-		var riderUuid = getRider();
+	var riderUuid = getRider();
 		
-		var l
-			= new Location( rideUuid, riderUuid, location.coords.latitude, location.coords.longitude );
+	var l
+		= new Location( rideUuid, riderUuid, position.coords.latitude, position.coords.longitude );
 		
-		postLocation( l, renderData );
+	postLocation( l, loadLocations );
 		
-	}
+}
 	
-	var track = function( ride ) {
+var track = function( ) {
 		
-		renderRide( ride );
-		window.setInterval( ping, 10000 );
+	tracker = window.setInterval( ping, 10000 );
 		
-	}
+};
+
+var untrack = function( ) {
+		
+		window.clearInterval( tracker  );
+		
+		
+};
 	
-	var startRide = function( position ) {
+var joinRide = function( position ) {
 		
-		var uuid = $jq( "#ride-uuid" ).val();
+	// join ride by start tracking
+	track( );
 		
-		var ride 
-			= new Ride( uuid, "ROLLIN_IN_THE_DEEP", position.coords.latitude, position.coords.longitude );
-	
-		putRide( ride, $jq("#ride"), track );
-		
-		/*
-			('Latitude: '          + position.coords.latitude          + '\n' +
-              'Longitude: '         + position.coords.longitude         + '\n' +
-              'Altitude: '          + position.coords.altitude          + '\n' +
-              'Accuracy: '          + position.coords.accuracy          + '\n' +
-              'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-              'Heading: '           + position.coords.heading           + '\n' +
-              'Speed: '             + position.coords.speed             + '\n' +
-              'Timestamp: '         + position.timestamp                + '\n');
-        */
-    };
+};
 
     // onError Callback receives a PositionError object
     //
@@ -151,20 +127,31 @@ var getParameter = function (url, key) {
     	console.error( error );
     }
     
-$jq("#ride-start").click( function() {
-	
-	// navigator.geolocation.getCurrentPosition( renderLocation, onError, { timeout: 20000, enableHighAccuracy: true } );
-	navigator.geolocation.getCurrentPosition( startRide, onError, { timeout: 20000, enableHighAccuracy: true } );
-	
-	
-} );
-    
 jQuery( document ).ready(function() {
 
-    try {
-    	var uuid = getParameter(window.location.href,"q");
-    	$jq( "#ride-uuid" ).attr("data-uuid", uuid );
-    	loadRide( uuid );
+	try {
+		
+		$jq("#join").click( function() {
+	    	
+	    	joinRide();
+		
+		
+		} );
+		
+		document.addEventListener('deviceready', function () {
+		
+			if ( ! cordova.plugins.backgroundMode.isEnabled() ) {
+				
+				cordova.plugins.backgroundMode.enable();
+				
+			}
+			
+		}, false );
+		
+		var uuid = getParameter(window.location.href,"q");
+	    $jq( "#ride-uuid" ).attr("data-uuid", uuid );
+	    loadRide( uuid );
+	    
 	}
 	catch( err ) {
 		$jq("#error").html( err );
