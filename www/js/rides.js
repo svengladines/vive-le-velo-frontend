@@ -68,6 +68,30 @@ jQuery( document ).ready(function() {
 		var html = Mustache.to_html(ridesTemplate, result );
 		tbody.html( html );
 		
+		loadMaps();
+		
+	};
+
+	var renderMap = function( locations ) {
+		var mostRecentLocation = locations[ 0 ];
+		var map = L.map('vive-map-id-' + mostRecentLocation.rideID ).setView([mostRecentLocation.lattitude,mostRecentLocation.longitude], 13);
+
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+	}
+
+	var loadMaps = function( ) {
+
+		$jq(".vive-map").each( function() {
+
+			var rideID = $jq(this).attr("data-ride-uuid");
+			var url = locationsURL( rideID );
+			getLocations( url, renderMap );
+
+		} );
+
+		
 	};
 	
 	$jq("#add").click( function() {

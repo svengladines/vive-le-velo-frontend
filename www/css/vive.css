@@ -33,3 +33,7 @@ main > .mdl-layout__tab-panel {
 	margin-left: auto;
   	margin-right: auto;
 }
+
+.vive-map {
+	height: 100%;
+}

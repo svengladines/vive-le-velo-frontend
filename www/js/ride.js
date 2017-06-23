@@ -1,5 +1,5 @@
 var $jq = jQuery.noConflict();
-var tracker;
+var tracker = null;
 
 var rideID = function () {
 
@@ -101,52 +101,71 @@ var updateLocation = function( position ) {
 }
 	
 var track = function( ) {
+	
+	if ( tracker == null ) {
 		
-	tracker = window.setInterval( ping, 10000 );
+		tracker = window.setInterval( ping, 10000 );
+		
+	}
 		
 };
 
 var untrack = function( ) {
 		
-		window.clearInterval( tracker  );
-		
+	window.clearInterval( tracker  );
+	tracker = null;
+	cordova.plugins.backgroundMode.disable();
 		
 };
 	
-var joinRide = function( position ) {
+var join = function( position ) {
 		
 	// join ride by start tracking
 	track( );
 		
 };
 
-    // onError Callback receives a PositionError object
-    //
-    function onError(error) {
-    	$jq("#error").html( error.message );
-    	console.error( error );
-    }
+var unjoin = function( position ) {
+	
+	// stop tracking
+	untrack( );
+		
+};
+
+// onError Callback receives a PositionError object
+//
+function onError(error) {
+	$jq("#error").html( error.message );
+	console.error( error );
+};
     
 jQuery( document ).ready(function() {
-
+	
 	try {
 		
-		$jq("#join").click( function() {
-	    	
-	    	joinRide();
-		
-		
-		} );
-		
 		document.addEventListener('deviceready', function () {
-		
+			
 			if ( ! cordova.plugins.backgroundMode.isEnabled() ) {
 				
 				cordova.plugins.backgroundMode.enable();
 				
 			}
-			
+				
 		}, false );
+		
+		$jq("#join").click( function() {
+	    	
+	    	join();
+		
+		
+		} );
+		
+		$jq("#unjoin").click( function() {
+	    	
+	    	unjoin();
+		
+		
+		} );
 		
 		var uuid = getParameter(window.location.href,"q");
 	    $jq( "#ride-uuid" ).attr("data-uuid", uuid );
