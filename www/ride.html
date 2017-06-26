@@ -46,6 +46,32 @@
         <title>Vive Le Velo</title>
     </head>
     <body class="mdl-vive mdl-base">
+
+	<script id="dataTemplate" type="text/template">
+		<div id="vive-ride-data-title">
+			
+				<div class="mdl-textfield mdl-js-textfield">
+					<input type="hidden" name="uuid" value="{{object.id}}">
+					<input class="mdl-textfield__input" type="text" id="vive-ride-title" name="title">
+					<label class="mdl-textfield__label" for="vive-ride-title">{{object.title}}</label>
+	 	  		</div>
+			
+		</div>
+
+
+		<div id="vive-ride-data-description">
+			<form id="descriptionForm" action="#">
+				<div class="mdl-textfield mdl-js-textfield">
+					<input type="hidden" name="uuid" value="{{object.id}}">
+					<input class="mdl-textfield__input" type="text" id="vive-ride-description" name="description">
+					<label class="mdl-textfield__label" for="vive-ride-description">{{object.description}}</label>
+	 	  		</div>
+			</form>
+		</div>
+
+	</script>
+
+				
     
     <script id="locationsTemplate" type="text/template">
 		<br/>
@@ -58,32 +84,34 @@
 	<span id="ride-uuid"></span>
 	
 	<div class="mdl-layout__container has-scrolling-header">
-		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header has-tabs is-upgraded" data-upgraded=",MaterialLayout">
-	      <main class="mdl-layout__content">
+		
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header is-upgraded" data-upgraded=",MaterialLayout">
+	     
+		<main class="mdl-layout__content">
 	      
 	      	<div class="mdl-grid">
 	      	
-	      		<div id="vive-my-ride" class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+	      		<div id="vive-data" class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+
+			</div>
 	      		
-	      			<div id="vive-locations" class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+	      		<div id="vive-locations" class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
 	      		
-		         	</div>
+		        </div>
 		         
-		         	<div id="vive-actions" class="mdl-cell mdl-cell--12-col">
-		         	
-		         		<button id="join" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-  							Join
-						</button>
-						
-						<button id="unjoin" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-  							Unjoin
-						</button>
-	      		
-		         	</div>
+	         	<div id="vive-actions" class="mdl-cell mdl-cell--12-col">
+	         	
+	         		<button id="join" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+						Join
+					</button>
+					
+					<button id="unjoin" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+						Unjoin
+					</button>
+      		
+	         	</div>
 	      		
 		         </div>
-		         
-		     </div>
 			            
 	       </main>
 	    </div>

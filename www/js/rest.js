@@ -20,7 +20,7 @@ var rideURL = function ( uuid ) {
 	
 };
 
-var getRide = function ( url, callback ) {
+var getRide = function ( url, callbacks ) {
 	
 	$jq.ajax( {
 		type: "get",
@@ -28,8 +28,12 @@ var getRide = function ( url, callback ) {
 		dataType: "json",
 	    processData: false,
 		success: function( returned ) {
-			if ( callback ) {
-				callback( returned );
+			if ( callbacks ) {
+				for ( var i in callbacks ) {
+					var callback = callbacks[ i ];
+					callback( returned );	
+				}
+				
 			}
 			else {
 				// success( button, statusElement, "Opgeslagen" );

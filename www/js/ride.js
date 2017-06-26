@@ -62,7 +62,8 @@ var postLocation = function ( location, callback ) {
 };
 	
 	var loadRide = function ( uuid ) {
-		return getRide( rideURL( uuid ), loadLocations );
+		var callbacks = { renderData, loadLocations };
+		return getRide( rideURL( uuid ), callbacks );
 	}
 	
 	var renderLocation = function( location ) {
@@ -71,6 +72,32 @@ var postLocation = function ( location, callback ) {
 		$jq("#lat").html( location.coords.latitude );
 		
 	}
+
+// ### rendering
+
+var renderData = function( ride ) {
+	
+	var dataDiv = $jq("#vive-data");
+	var dataTemplate = $jq("#dataTemplate").html();
+	var html = Mustache.to_html( dataTemplate, ride );
+	dataDiv.html( html );
+	
+	// after rendering, bind events
+	
+	$jq("#vive-ride-title").keypress( function( e ) {
+	    
+		if(e.which == 13) {
+			
+			var newTitle = $jq("#vive-ride-title").val();
+			var ride = new Ride();
+			ride.uuid = rideID();
+			ride.title = newTitle;
+			putRide( rideURL( ride.uuid ), ride );
+	        
+	    }
+	})
+			
+};
 	
 var renderLocations = function( locations ) {
 	var l = { locations: locations, last:locations[locations.length-1] };
