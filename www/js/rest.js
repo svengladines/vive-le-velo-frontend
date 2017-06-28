@@ -91,6 +91,27 @@ var putRide = function ( url, ride, element, callback ) {
 		});
 };
 
+var deleteRide = function ( url, callback ) {
+		
+		$jq.ajax( {
+			type: "delete",
+			url: url,
+			dataType: "json",
+     		    	processData: false,
+			success: function( deletedResult ) {
+				if ( callback ) {
+					callback( deletedResult );
+				}
+				else {
+					// success( button, statusElement, "Opgeslagen" );
+				}
+			},
+			error: function(  jqXHR, textStatus, errorThrown ) {
+				$jq("#error").html( errorThrown );
+			}
+		});
+};
+
 var getLocations = function ( url, callback ) {
 
 	$jq.ajax( {

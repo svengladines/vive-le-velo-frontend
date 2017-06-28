@@ -95,7 +95,20 @@ var renderData = function( ride ) {
 			putRide( rideURL( ride.uuid ), ride );
 	        
 	    }
-	})
+	});
+
+	$jq("#vive-ride-description").keypress( function( e ) {
+	    
+		if(e.which == 13) {
+			
+			var newDescription = $jq("#vive-ride-description").val();
+			var ride = new Ride();
+			ride.uuid = rideID();
+			ride.description = newDescription;
+			putRide( rideURL( ride.uuid ), ride );
+	        
+	    }
+	});
 			
 };
 	
@@ -159,6 +172,17 @@ var unjoin = function( position ) {
 		
 };
 
+var del = function( ) {
+	
+	var uuid = rideID();
+	deleteRide( rideURL( uuid ), backToSquareOne );
+		
+};
+
+var backToSquareOne = function () {
+	window.location.href = "rides.html";
+}
+
 // onError Callback receives a PositionError object
 //
 function onError(error) {
@@ -182,14 +206,21 @@ jQuery( document ).ready(function() {
 		
 		$jq("#join").click( function() {
 	    	
-	    	join();
+		    	join();
 		
 		
 		} );
 		
 		$jq("#unjoin").click( function() {
 	    	
-	    	unjoin();
+		    	unjoin();
+		
+		
+		} );
+
+		$jq("#delete").click( function() {
+	    	
+		    	del();
 		
 		
 		} );
