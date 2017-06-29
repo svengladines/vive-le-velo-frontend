@@ -8,11 +8,32 @@
   color: white;
 }
 
+.mdl-vive .mdl-layout:not(.is-small-screen) .mdl-layout__tab-bar,
+.mdl-vive .mdl-layout:not(.is-small-screen) .mdl-layout__tab-bar-container {
+  overflow: visible;
+}
+
+.mdl-vive .mdl-layout__tab-bar {
+    padding: 0;
+    padding-left: 16px;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+}
+
+.mdl-vive .mdl-layout__tab-bar-container {
+    height: 64px;
+}
+
+.mdl-vive .mdl-layout__tab-bar-button {
+    display: none;
+}
+
 .vive-fab {
-  position: absolute;
-  left: 40px;
-  top: 36px;
-  z-index: 999;
+    position: absolute;
+    right: 40px;
+    top: 36px;
+    z-index: 999;
 }
 
 main > .mdl-layout__tab-panel {
