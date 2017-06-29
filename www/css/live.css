@@ -1,25 +1,9 @@
-.legend {
-	text-align: center;
-	padding: 10px;
-	background-color: #dddddd;
+body {
+    padding: 0;
+    margin: 0;
 }
 
-.reini {
-	color: #ff0000;
-}
-
-.krikke {
-	color: #00ff00;
-}
-
-.john {
-	color: #0000ff;
-}
-
-.svekke {
-	color: #ffffff;
-}
-
-#map {
-	min-height: 300px;
+html, body, #vive-map {
+    height: 100vh;
+    width: 100vw;
 }
