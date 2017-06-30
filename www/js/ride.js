@@ -144,7 +144,7 @@ var track = function( ) {
 	
 	if ( tracker == null ) {
 		
-		tracker = window.setInterval( ping, 10000 );
+		tracker = window.setInterval( ping, 60000 );
 		
 	}
 		

@@ -22,18 +22,25 @@ var renderMap = function( locations ) {
 		}).addTo(map);
 }
 
-var loadMap = function( uuid ) {
+var loadMap = function( ) {
 
+	var uuid = getParameter(window.location.href,"q");
 	var url = locationsURL( uuid );
 	getLocations( url, renderMap );
 		
 };
 
+var ping = function(  ){
+	
+	var timer = window.setInterval( loadMap, 61000 );
+	
+}
+
 jQuery( document ).ready(function() {
 	
 	try {
-		var uuid = getParameter(window.location.href,"q");
-		loadMap( uuid );
+		loadMap();
+		ping();
 	}
 	catch( err ) {
 		console.error( err );

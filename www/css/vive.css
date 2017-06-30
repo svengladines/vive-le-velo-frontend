@@ -56,5 +56,10 @@ main > .mdl-layout__tab-panel {
 }
 
 .vive-map {
+	min-height: 200px;
 	height: 100%;
+}
+
+.vive-le-velo-header {
+	padding: 28px;
 }

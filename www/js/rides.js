@@ -73,12 +73,15 @@ jQuery( document ).ready(function() {
 	};
 
 	var renderMap = function( locations ) {
-		var mostRecentLocation = locations[ 0 ];
-		var map = L.map('vive-map-id-' + mostRecentLocation.rideID ).setView([mostRecentLocation.lattitude,mostRecentLocation.longitude], 13);
-		L.marker([mostRecentLocation.lattitude,mostRecentLocation.longitude]).addTo(map);
-		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-		}).addTo(map);
+		
+		if ( locations.length > 0 ) {
+			var mostRecentLocation = locations[ 0 ];
+			var map = L.map('vive-map-id-' + mostRecentLocation.rideID ).setView([mostRecentLocation.lattitude,mostRecentLocation.longitude], 13);
+			L.marker([mostRecentLocation.lattitude,mostRecentLocation.longitude]).addTo(map);
+			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+			}).addTo(map);
+		}
 	}
 
 	var loadMaps = function( ) {
