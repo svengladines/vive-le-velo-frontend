@@ -1,5 +1,6 @@
 var $jq = jQuery.noConflict();
-var tracker = null;
+var foreGroundTracker = null;
+var backGroundTracker = null;
 
 var rideID = function () {
 
@@ -61,19 +62,25 @@ var postLocation = function ( location, callback ) {
 	
 };
 	
-	var loadRide = function ( uuid ) {
-		var callbacks = { renderData, loadLocations };
-		return getRide( rideURL( uuid ), callbacks );
-	}
+var loadRide = function ( uuid ) {
+	var callbacks = { renderData, loadLocations };
+	return getRide( rideURL( uuid ), callbacks );
+};
 	
-	var renderLocation = function( location ) {
-		
-		$jq("#long").html( location.coords.longitude );
-		$jq("#lat").html( location.coords.latitude );
-		
-	}
+var renderLocation = function( location ) {
+	
+	$jq("#long").html( location.coords.longitude );
+	$jq("#lat").html( location.coords.latitude );
+	
+};
 
 // ### rendering
+
+var renderStatus = function( status ) {
+	
+	var dataDiv = $jq("#vive-status");
+	dataDiv.html( status );
+}
 
 var renderData = function( ride ) {
 	
@@ -123,6 +130,7 @@ var renderLocations = function( locations ) {
 	
 var ping = function() {
 		
+	renderStatus( "ping" );
 	navigator.geolocation.getCurrentPosition( updateLocation, onError, { timeout: 20000, enableHighAccuracy: true } );
 		
 };
@@ -142,9 +150,11 @@ var updateLocation = function( position ) {
 	
 var track = function( ) {
 	
-	if ( tracker == null ) {
+	renderStatus( "track" );
+	
+	if ( foreGroundTracker == null ) {
 		
-		tracker = window.setInterval( ping, 60000 );
+		foreGroundTracker = window.setInterval( ping, 60000 );
 		
 	}
 		
@@ -152,15 +162,15 @@ var track = function( ) {
 
 var untrack = function( ) {
 		
-	window.clearInterval( tracker  );
+	window.clearInterval( foreGroundTracker );
 	tracker = null;
 	cordova.plugins.backgroundMode.disable();
 		
 };
 	
 var join = function( position ) {
-		
-	// join ride by start tracking
+	
+	ping();
 	track( );
 		
 };
@@ -195,14 +205,25 @@ jQuery( document ).ready(function() {
 	try {
 		
 		document.addEventListener('deviceready', function () {
+
+			cordova.plugins.backgroundMode.on('activate', function() {
+				renderStatus("backgroundmode activated");
+				backGroundTracker = window.setInterval( ping, 60000 );
+			});
 			
+			cordova.plugins.backgroundMode.on('deactivate', function() {
+				renderStatus("backgroundmode deactivated");
+				window.clearInterval( backGroundTracker );
+			});
+		
 			if ( ! cordova.plugins.backgroundMode.isEnabled() ) {
 				
 				cordova.plugins.backgroundMode.enable();
 				
 			}
-				
 		}, false );
+
+
 		
 		$jq("#join").click( function() {
 	    	

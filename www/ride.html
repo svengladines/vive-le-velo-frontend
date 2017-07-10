@@ -49,22 +49,23 @@
 
 	<script id="dataTemplate" type="text/template">
 		<div id="vive-ride-data-title">
-			
-				<div class="mdl-textfield mdl-js-textfield">
+			<form id="descriptionForm" action="#">
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 					<input type="hidden" name="uuid" value="{{object.id}}">
-					<input class="mdl-textfield__input" type="text" id="vive-ride-title" name="title">
 					<label class="mdl-textfield__label" for="vive-ride-title">{{object.title}}</label>
+					<input class="mdl-textfield__input" type="text" id="vive-ride-title" name="title">
 	 	  		</div>
+			</form>
 			
 		</div>
 
 
 		<div id="vive-ride-data-description">
 			<form id="descriptionForm" action="#">
-				<div class="mdl-textfield mdl-js-textfield">
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 					<input type="hidden" name="uuid" value="{{object.id}}">
-					<input class="mdl-textfield__input" type="text" id="vive-ride-description" name="description">
 					<label class="mdl-textfield__label" for="vive-ride-description">{{object.description}}</label>
+					<input class="mdl-textfield__input" type="text" id="vive-ride-description" name="description">
 	 	  		</div>
 			</form>
 		</div>
@@ -91,9 +92,7 @@
 	      
 	      	<div class="mdl-grid">
 	      	
-	      		<div id="vive-data" class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col">
-
-			</div>
+	      		<div id="vive-data" class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col"></div>
 	      		
 	      		<div id="vive-locations" class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
 	      		
@@ -116,6 +115,8 @@
 	         	</div>
 	      		
 		         </div>
+		         
+		         <div id="vive-status" class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col"></div>
 			            
 	       </main>
 	    </div>

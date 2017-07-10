@@ -19,52 +19,46 @@
 
 var $jq = jQuery.noConflict();
 
-var app = {
-    // Application Constructor
-    initialize: function() {
-        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
-    },
-
-    // deviceready Event Handler
-    //
-    // Bind any cordova events here. Common events are:
-    // 'pause', 'resume', etc.
-    onDeviceReady: function() {
-        this.receivedEvent('splash');
-	this.identify();
-    },
-
     // Update DOM on a Received Event
-    receivedEvent: function(id,value) {
-        var parentElement = $jq("#" + id + ">");
-        var listeningElement = $jq("#" + id + " > .listening");
-        var receivedElement = $jq("#" + id + " > .received");
+var updateStatus = function(value) {
+	$jq("#status").html( value );
+};
 
-	if ( value ) {
-		receivedElement.html( value );
-	}
-
-        listeningElement.attr('style', 'display:none;');
-        receivedElement.attr('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
-
-    },
-    identify : function() {
+var identify = function() {
         var userID = this.getActor();
 	if ( ! userID ) {
 	    window.location.href="actor.html";
 	}
 	else {
-	    this.receivedEvent("splash", userID );
+	    renderRider( userID );
 	}
-     },
-     getActor : function() {
+};
+
+var renderRider = function( rider ) {
+	
+	var riderTemplate = $jq("#riderTemplate").html();
+	var div = $jq( "#status" );
+	var html = Mustache.to_html(riderTemplate, rider );
+	div.html( html );
+	
+};
+
+var getActor = function() {
         var key = "userID";
 	var storage = window.localStorage;
 	var value = storage.getItem(key);
 	return value;
-     }
 };
 
-app.initialize();
+jQuery( document ).ready(function() {
+	
+	var riderTemplate = $jq("#riderTemplate").html();
+	
+	document.addEventListener('deviceready', function () { 
+
+		updateStatus( "Connected to device" );
+		identify();
+
+	});
+
+});
