@@ -112,7 +112,7 @@ var deleteRide = function ( url, callback ) {
 		});
 };
 
-var getLocations = function ( url, callback ) {
+var getLocations = function ( url, callbacks ) {
 
 	$jq.ajax( {
 		type: "get",
@@ -120,7 +120,13 @@ var getLocations = function ( url, callback ) {
 		dataType: "json",
 	    processData: false,
 		success: function( returned ) {
-			callback( returned );
+			if ( callbacks ) {
+				for ( var i in callbacks ) {
+					var callback = callbacks[ i ];
+					callback( returned );	
+				}
+				
+			}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
 			console.log( errorThrown );

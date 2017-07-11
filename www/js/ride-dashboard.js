@@ -7,12 +7,32 @@ var rideID = function () {
     	return $jq( "#ride-uuid" ).attr("data-uuid");
 
 };
+
+var getParameter = function (url, key) {
+		var urlParts = url.split('?');
+	    var sURLVariables = urlParts[1].split('&');
+	    for (var i = 0; i < sURLVariables.length; i++) 
+	    {
+	        var sParameterName = sURLVariables[i].split('=');
+	        if (sParameterName[0] == key) 
+	        {
+	            return sParameterName[1];
+	        }
+	    }
+};
 	
-var loadLocations = function( callbacks ) {
+	var getRider = function() {
+        var key = "userID";
+        var storage = window.localStorage;
+        var value = storage.getItem(key);
+        return value;
+     };
+	
+var loadLocations = function( ) {
     	
 	var url = locationsURL( rideID() );
     	
-	getLocations( url, callbacks );
+	getLocations( url, renderLocations );
     	
 };
 	
@@ -42,6 +62,11 @@ var postLocation = function ( location, callback ) {
 	
 };
 	
+var loadRide = function ( uuid ) {
+	var callbacks = { renderData, loadLocations };
+	return getRide( rideURL( uuid ), callbacks );
+};
+	
 var renderLocation = function( location ) {
 	
 	$jq("#long").html( location.coords.longitude );
@@ -57,36 +82,55 @@ var renderStatus = function( status ) {
 	dataDiv.html( status );
 }
 
-var renderMap = function( locations ) {
-		var mostRecentLocation = locations[ 0 ];
-		var map = L.map('vive-map').setView([mostRecentLocation.lattitude,mostRecentLocation.longitude], 13);
-		L.marker([mostRecentLocation.lattitude,mostRecentLocation.longitude]).addTo(map);
-		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-		}).addTo(map);
-}
+var renderData = function( ride ) {
+	
+	var dataDiv = $jq("#vive-data");
+	var dataTemplate = $jq("#dataTemplate").html();
+	var html = Mustache.to_html( dataTemplate, ride );
+	dataDiv.html( html );
+	
+	// after rendering, bind events
+	
+	$jq("#vive-ride-title").keypress( function( e ) {
+	    
+		if(e.which == 13) {
+			
+			var newTitle = $jq("#vive-ride-title").val();
+			var ride = new Ride();
+			ride.uuid = rideID();
+			ride.title = newTitle;
+			putRide( rideURL( ride.uuid ), ride );
+	        
+	    }
+	});
 
-var renderActions = function( locations ) {
-	var container = $jq("#vive-actions").html();
-	var template = $jq("#actionsTemplate").html();
-	var html = Mustache.to_html(template, actions );
-	container.html( html );
-}
-
-// ### loading
-
-var loadAll = function( ) {
-
-	var uuid = getParameter(window.location.href,"q");
-	var url = locationsURL( uuid );
-	var callbacks = { renderMap, renderActions };
-	getLocations( url, callbacks );
-		
+	$jq("#vive-ride-description").keypress( function( e ) {
+	    
+		if(e.which == 13) {
+			
+			var newDescription = $jq("#vive-ride-description").val();
+			var ride = new Ride();
+			ride.uuid = rideID();
+			ride.description = newDescription;
+			putRide( rideURL( ride.uuid ), ride );
+	        
+	    }
+	});
+			
+};
+	
+var renderLocations = function( locations ) {
+	var l = { locations: locations, last:locations[locations.length-1] };
+	var locationsDiv = $jq("#vive-locations");
+	var locationsTemplate = $jq("#locationsTemplate").html();
+	var html = Mustache.to_html( locationsTemplate, l );
+	locationsDiv.html( html );
+			
 };
 	
 var ping = function() {
 		
-	renderStatus( "Ping..." );
+	renderStatus( "ping" );
 	navigator.geolocation.getCurrentPosition( updateLocation, onError, { timeout: 20000, enableHighAccuracy: true } );
 		
 };
@@ -95,11 +139,12 @@ var updateLocation = function( position ) {
 		
 	var rideUuid = rideID();
 		
-	var riderUuid = getActor();
+	var riderUuid = getRider();
 		
-	var l = new Location( rideUuid, riderUuid, position.coords.latitude, position.coords.longitude );
+	var l
+		= new Location( rideUuid, riderUuid, position.coords.latitude, position.coords.longitude );
 		
-	postLocation( l, loadAll );
+	postLocation( l, loadLocations );
 		
 }
 	
@@ -148,6 +193,8 @@ var backToSquareOne = function () {
 	window.location.href = "rides.html";
 }
 
+// onError Callback receives a PositionError object
+//
 function onError(error) {
 	$jq("#error").html( error.message );
 	console.error( error );
@@ -200,8 +247,8 @@ jQuery( document ).ready(function() {
 		} );
 		
 		var uuid = getParameter(window.location.href,"q");
-	        $jq( "#ride-uuid" ).attr("data-uuid", uuid );
-		loadAll();
+	    $jq( "#ride-uuid" ).attr("data-uuid", uuid );
+	    loadRide( uuid );
 	    
 	}
 	catch( err ) {
