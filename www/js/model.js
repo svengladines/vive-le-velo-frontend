@@ -25,7 +25,14 @@ var Location = function ( rideUuid, riderUuid, latitude, longitude ) {
 	this.longitude = longitude;
 	this.comment = null;
 	this.event = null;
-}
+};
+
+var Action = function( id, symbol ) {
+	
+	this.id = id;
+	this.symbol = symbol;
+	
+};
 
 var serialize = function( element ) {
     var o = {};

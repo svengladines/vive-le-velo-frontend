@@ -53,11 +53,12 @@
     <body class="mdl-vive mdl-base">
 
 	<script id="actionsTemplate" type="text/template">
-		{{#action}}
-		<button class="vive-fab-bottom mdl-button mdl-js-button mdl-button--fab mdl-button--colored mdl-shadow--4dp mdl-color--accent" id="join" data-upgraded=",MaterialButton,MaterialRipple">
-			      <i class="material-icons" role="presentation">refresh</i>
+		{{#actions}}
+		<button id="{{id}}" class="vive-fab-bottom mdl-button mdl-js-button mdl-button--fab mdl-button--colored mdl-shadow--4dp mdl-color--accent" id="join" data-upgraded=",MaterialButton,MaterialRipple">
+			      <i class="material-icons" role="presentation">{{symbol}}</i>
 			</button>
-		{{/action}}
+		{{/actions}}
+		<span id="vive-status"></span>
 	</script>
     
     <script id="locationsTemplate" type="text/template">

@@ -15,3 +15,9 @@
 .demo-chart:nth-child(4) {
   color: #EF3C79;
 }
+
+#vive-status {
+	color : white;
+	vertical-align: middle;
+	font-weight: bold;
+}

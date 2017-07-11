@@ -18,6 +18,7 @@ var loadLocations = function( callbacks ) {
 	
 var postLocation = function ( location, callback ) {
 	
+	renderStatus( "Sending location: [" + location.longitude + "," + location.latitude + "]" );
 	var locations = [ location ];
 
 	$jq.ajax( {
@@ -53,33 +54,68 @@ var renderLocation = function( location ) {
 
 var renderStatus = function( status ) {
 	
-	var dataDiv = $jq("#vive-status");
-	dataDiv.html( status );
+	var container = $jq("#vive-status");
+	
+	if ( status ) {
+		container.html( status );
+	} else {
+		container.html( "" );
+	}
 }
 
 var renderMap = function( locations ) {
-		var mostRecentLocation = locations[ 0 ];
-		var map = L.map('vive-map').setView([mostRecentLocation.lattitude,mostRecentLocation.longitude], 13);
-		L.marker([mostRecentLocation.lattitude,mostRecentLocation.longitude]).addTo(map);
-		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-		}).addTo(map);
+		if ( locations.length > 0 ) {
+			var mostRecentLocation = locations[ 0 ];
+			var map = L.map('vive-map').setView([mostRecentLocation.lattitude,mostRecentLocation.longitude], 13);
+			L.marker([mostRecentLocation.lattitude,mostRecentLocation.longitude]).addTo(map);
+			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+			}).addTo(map);
+		}
 }
 
 var renderActions = function( locations ) {
-	var container = $jq("#vive-actions").html();
+	var container = $jq("#vive-actions");
 	var template = $jq("#actionsTemplate").html();
-	var html = Mustache.to_html(template, actions );
+	var joinAction = new Action("join","play_circle_outline");
+	var unjoinAction = new Action("unjoin","pause_cirle_outline"); 
+	var actions = [ joinAction, unjoinAction  ];
+	var view = { "actions" : actions };
+	var html = Mustache.to_html(template, view );
 	container.html( html );
+	
+	$jq("#join").click( function() {
+    	
+    	join();
+
+
+	} );
+		
+	$jq("#unjoin").click( function() {
+		
+	    	unjoin();
+	
+	
+	} );
+		
+	$jq("#delete").click( function() {
+		
+	    	del();
+	
+	
+	} );
+
+
 }
 
 // ### loading
 
 var loadAll = function( ) {
 
+	renderStatus( "Loading data" );
 	var uuid = getParameter(window.location.href,"q");
 	var url = locationsURL( uuid );
-	var callbacks = { renderMap, renderActions };
+	var callbacks = { renderStatus, renderMap, renderActions };
 	getLocations( url, callbacks );
 		
 };
@@ -125,6 +161,8 @@ var untrack = function( ) {
 	
 var join = function( position ) {
 	
+	renderStatus( "Start tracking" );
+	
 	ping();
 	track( );
 		
@@ -134,6 +172,7 @@ var unjoin = function( position ) {
 	
 	// stop tracking
 	untrack( );
+	renderStatus( "Stopped tracking" );
 		
 };
 
@@ -176,29 +215,6 @@ jQuery( document ).ready(function() {
 			}
 		}, false );
 
-
-		
-		$jq("#join").click( function() {
-	    	
-		    	join();
-		
-		
-		} );
-		
-		$jq("#unjoin").click( function() {
-	    	
-		    	unjoin();
-		
-		
-		} );
-
-		$jq("#delete").click( function() {
-	    	
-		    	del();
-		
-		
-		} );
-		
 		var uuid = getParameter(window.location.href,"q");
 	        $jq( "#ride-uuid" ).attr("data-uuid", uuid );
 		loadAll();
